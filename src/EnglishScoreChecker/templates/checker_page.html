@@ -2,10 +2,54 @@
 
 {% extends "base.html" %}
 
+{% block title %}
+english level checker
+{% endblock %}
+
+{% block head %}
+<script src="{{url_for('static', filename='js/checker.js')}}"></script>
+{% endblock %}
+
 {% block content %}
 <div class='container' id='maincontent'>
-	<div class='header'>
-	  <h3 class='text-muted'>template test</h3>
-	</div>
+  <div class='p-3'>
+    <ul class="nav nav-tabs flex-column flex-sm-row" id='selector'>
+      <li class="nav-item" role="presentation">
+        <a class="flex-sm-fill text-sm-center nav-link active" role="tab" data-toggle="tab" id='tab_essay' aria-controls="essay" href='#essay'>
+          Essay
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="flex-sm-fill text-sm-center nav-link" role="tab" data-toggle="tab" id='tab_textbook' aria-controls="textbook" href='#textbook'>
+          Textbook
+        </a>
+      </li>
+    </ul>
+    <div id="myTabContent" class="tab-content mt-3">
+      <div id="essay" 
+           class="tab-pane active" 
+           role="tabpanel" 
+           aria-labelledby="essay-tab">
+        <form>
+          <div class="form-group">
+            <textarea class="form-control" 
+                      id="essay_textarea" 
+                      rows="3" 
+                      placeholder="input essay like something"></textarea>
+          </div>
+        </form>
+      </div>
+      <div id="textbook" class="tab-pane" role="tabpanel" aria-labelledby="textbook-tab">
+        <form>
+          <div class="form-group">
+            <textarea class="form-control" 
+                      id="textbook_textarea" 
+                      rows="3" 
+                      placeholder="input textbook like something"></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
