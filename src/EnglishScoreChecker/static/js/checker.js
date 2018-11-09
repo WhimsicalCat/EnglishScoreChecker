@@ -16,6 +16,18 @@ $(function() {
     })
     .done(function(recv){
       $('#num_of_word').text(recv)
+//      console.log(parseInt(recv));
+      if (parseInt(recv) >= 10){
+        $('#check_mark').removeClass('fa-ban');
+        $('#check_mark').addClass('fa-check');
+        $('#submit_button').removeAttr('disabled');
+        console.log('bigger')
+      } else {
+        $('#check_mark').removeClass('fa-check');
+        $('#check_mark').addClass('fa-ban');
+        $('#submit_button').attr('disabled', '');
+        console.log('smaller')
+      }
     })
     .fail(function(recv){
       
