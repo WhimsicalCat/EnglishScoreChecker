@@ -26,28 +26,56 @@ english level checker
       </li>
     </ul>
     <div id="myTabContent" class="tab-content mt-3">
-      <div id="essay" 
+      <div id="active-tab" 
            class="tab-pane active" 
            role="tabpanel" 
-           aria-labelledby="essay-tab">
+           aria-labelledby="tab">
         <form>
           <div class="form-group">
             <textarea class="form-control" 
-                      id="essay_textarea" 
+                      id="inputtext" 
                       rows="3" 
-                      placeholder="input essay like something"></textarea>
+                      placeholder="input something"></textarea>
           </div>
         </form>
       </div>
-      <div id="textbook" class="tab-pane" role="tabpanel" aria-labelledby="textbook-tab">
-        <form>
-          <div class="form-group">
-            <textarea class="form-control" 
-                      id="textbook_textarea" 
-                      rows="3" 
-                      placeholder="input textbook like something"></textarea>
-          </div>
-        </form>
+    </div>
+    </div>
+
+<!--     <div id="myTabContent" class="tab-content mt-3"> -->
+<!--       <div id="essay"  -->
+<!--            class="tab-pane active"  -->
+<!--            role="tabpanel"  -->
+<!--            aria-labelledby="essay-tab"> -->
+<!--         <form> -->
+<!--           <div class="form-group"> -->
+<!--             <textarea class="form-control"  -->
+<!--                       id="essay_textarea"  -->
+<!--                       rows="3"  -->
+<!--                       placeholder="input essay like something"></textarea> -->
+<!--           </div> -->
+<!--         </form> -->
+<!--       </div> -->
+<!--       <div id="textbook" class="tab-pane" role="tabpanel" aria-labelledby="textbook-tab"> -->
+<!--         <form> -->
+<!--           <div class="form-group"> -->
+<!--             <textarea class="form-control"  -->
+<!--                       id="textbook_textarea"  -->
+<!--                       rows="3"  -->
+<!--                       placeholder="input textbook like something"></textarea> -->
+<!--           </div> -->
+<!--         </form> -->
+<!--       </div> -->
+<!--     </div> -->
+
+    <div class='row'>
+      <div class='col col-md'>
+        <div class='float-right'>
+          <span id='num_of_word'>0</span>/10
+          <button type="button" class="btn btn-primary">
+            submit
+          </button>
+        </div>
       </div>
     </div>
   </div>

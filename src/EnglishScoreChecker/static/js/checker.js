@@ -4,14 +4,14 @@
 //})
 
 $(function() {
+  var activeTab = $('a[data-toggle="tab"][class*="active"]').attr('href');
   $('a[data-toggle="tab"]').on('click', function(e) {
-//        window.localStorage.setItem('activeTab', $(e.target).attr('href'));
-    var activeTab = $(e.target).attr('href');
-    $('#selector a[href="' + activeTab + '"]').tab('show');
+    activeTab = $(e.target).attr('href');
+//    $('#selector a[href="' + activeTab + '"]').tab('show');
+    console.log(activeTab);
   });
-//  var activeTab = window.localStorage.getItem('activeTab');
-//  if (activeTab) {
-//    $('#myTab a[href="' + activeTab + '"]').tab('show');
-//    window.localStorage.removeItem("activeTab");
-  }
+  $('textarea[id="inputtext"').keyup(function(e) {
+    console.log($(e.target).val())
+  });
+  console.log(activeTab);
 });
