@@ -5,7 +5,7 @@ $(function() {
     activeTab = $(e.target).attr('href');
 //    console.log(activeTab);
   });
-  $('textarea[id="inputtext"]').keyup(function(e) {
+  $('#inputtext').keyup(function(e) {
 //    console.log($(e.target).val());
     $.ajax({
       url: 'count_word',
@@ -28,6 +28,21 @@ $(function() {
         $('#submit_button').attr('disabled', '');
         console.log('smaller')
       }
+    })
+    .fail(function(recv){
+      
+    });
+  });
+  $('#submit_button').on('click', function(e) {
+    $.ajax({
+      url: 'count_word',
+      type: "POST",
+      data: {
+        'data':$('#inputtext').val()
+      }
+    })
+    .done(function(recv){
+      
     })
     .fail(function(recv){
       
