@@ -7,6 +7,13 @@ english level checker
 {% endblock %}
 
 {% block head %}
+<script type='text/javascript'>
+{% if data is defined %}
+var data = {{ data|tojson|safe }}
+{% else %}
+var data = null
+{% endif %}
+</script>
 <script src="{{url_for('static', filename='js/checker.js')}}"></script>
 {% endblock %}
 
@@ -66,13 +73,44 @@ english level checker
       </div>
     </div>
   </div>
-  <div class='row px-3 no-display' >
-    <div class='col'>
-      <div class='card bg-light'>
-        <div class='card-body'>
-          hogehoge
+  <div class='row px-3' id='result'>
+    <div class='col-md-8'>
+      <div class='row'>
+        <div class='col-md-3 text-center'>
+          <p>文字数</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>単語数</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>使用文法項目数</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>推定誤り数</p>
         </div>
       </div>
+      <div class='row'>
+        <div class='col-md-3 text-center'>
+          <p>0</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>0</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>0</p>
+        </div>
+        <div class='col-md-3 text-center'>
+          <p>0</p>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-md'>
+          <p>grammer content like some thing</p>
+        </div>
+      </div>
+    </div>
+    <div class='col-md-4'>
+      <canvas id="level_chart"></canvas>
     </div>
   </div>
 </div>

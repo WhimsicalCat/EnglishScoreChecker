@@ -1,10 +1,13 @@
 
+
 $(function() {
   var activeTab = $('a[data-toggle="tab"][class*="active"]').attr('href');
+  
   $('a[data-toggle="tab"]').on('click', function(e) {
     activeTab = $(e.target).attr('href');
 //    console.log(activeTab);
   });
+  
   $('#inputtext').keyup(function(e) {
 //    console.log($(e.target).val());
     $.ajax({
@@ -21,32 +24,27 @@ $(function() {
         $('#check_mark').removeClass('fa-ban');
         $('#check_mark').addClass('fa-check');
         $('#submit_button').removeAttr('disabled');
-        console.log('bigger')
+//        console.log('bigger')
       } else {
         $('#check_mark').removeClass('fa-check');
         $('#check_mark').addClass('fa-ban');
         $('#submit_button').attr('disabled', '');
-        console.log('smaller')
+//        console.log('smaller')
       }
     })
     .fail(function(recv){
       
     });
   });
+  
+  var def_text = location.search.match('txt=(.*?)(&|$)');
+  console.log(def_text);
+  if (def_text){
+    $('#inputtext').val(decodeURI(def_text[1])).keyup();
+  }
+  
   $('#submit_button').on('click', function(e) {
-    $.ajax({
-      url: 'count_word',
-      type: "POST",
-      data: {
-        'data':$('#inputtext').val()
-      }
-    })
-    .done(function(recv){
-      
-    })
-    .fail(function(recv){
-      
-    });
+    window.location.search = 'txt=' + $('#inputtext').val();
   });
 //  console.log(activeTab);
 });

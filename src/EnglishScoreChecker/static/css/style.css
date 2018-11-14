@@ -1,3 +1,13 @@
 .no-display {
   display:none;
 }
+
+.hidden {
+	visibility: hidden;
+}
+
+#level_chart {
+	background-color: gray;
+	width: 100%;
+	height: auto;
+}
