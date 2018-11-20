@@ -104,11 +104,15 @@ var rcv_data = null
           <p id='r_num_of_incorrect'>0</p>
         </div>
       </div>
+      {% if grammer_contents is defined %}
       <div class='row'>
         <div class='col-md'>
-          <p>grammer content like some thing</p>
+          {% for content in grammer_contents %}
+          <p>{{ content }}</p>
+          {% endfor %}
         </div>
       </div>
+      {% endif %}
     </div>
     <div class='col-md-4'>
       <canvas id="level_chart"></canvas>

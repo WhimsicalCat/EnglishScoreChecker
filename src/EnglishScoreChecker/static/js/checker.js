@@ -1,6 +1,6 @@
 function change_data(data) {
-  console.log('change_data called');
-  console.log(data)
+//  console.log('change_data called');
+//  console.log(data);
   $('#r_num_of_chars').text(data.num_of_chars);
   $('#r_num_of_words').text(data.num_of_words);
   $('#r_num_of_grammers').text(data.num_of_used_grammer_content);
@@ -52,6 +52,16 @@ $(function() {
   
   if (rcv_data){
     change_data(rcv_data);
+    
+    var chart_canvas = document.getElementById('level_chart').getContext('2d');
+//    console.log(rcv_data.chart_data);
+//    console.log(rcv_data.chart_options);
+    
+    var myPieChart = new Chart(chart_canvas,{
+      type: 'pie',
+      data: rcv_data.chart_data,
+      options: rcv_data.chart_options
+    });
   }
   
   $('#submit_button').on('click', function(e) {
