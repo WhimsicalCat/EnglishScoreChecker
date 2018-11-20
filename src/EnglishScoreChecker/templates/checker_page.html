@@ -9,9 +9,9 @@ english level checker
 {% block head %}
 <script type='text/javascript'>
 {% if data is defined %}
-var data = {{ data|tojson|safe }}
+var rcv_data = {{ data|tojson|safe }}
 {% else %}
-var data = null
+var rcv_data = null
 {% endif %}
 </script>
 <script src="{{url_for('static', filename='js/checker.js')}}"></script>
@@ -73,6 +73,7 @@ var data = null
       </div>
     </div>
   </div>
+{% if data is defined %}
   <div class='row px-3' id='result'>
     <div class='col-md-8'>
       <div class='row'>
@@ -91,16 +92,16 @@ var data = null
       </div>
       <div class='row'>
         <div class='col-md-3 text-center'>
-          <p>0</p>
+          <p id='r_num_of_chars'>0</p>
         </div>
         <div class='col-md-3 text-center'>
-          <p>0</p>
+          <p id='r_num_of_words'>0</p>
         </div>
         <div class='col-md-3 text-center'>
-          <p>0</p>
+          <p id='r_num_of_grammers'>0</p>
         </div>
         <div class='col-md-3 text-center'>
-          <p>0</p>
+          <p id='r_num_of_incorrect'>0</p>
         </div>
       </div>
       <div class='row'>
@@ -113,5 +114,6 @@ var data = null
       <canvas id="level_chart"></canvas>
     </div>
   </div>
+{% endif %}
 </div>
 {% endblock %}

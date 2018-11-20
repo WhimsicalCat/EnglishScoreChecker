@@ -1,4 +1,11 @@
-
+function change_data(data) {
+  console.log('change_data called');
+  console.log(data)
+  $('#r_num_of_chars').text(data.num_of_chars);
+  $('#r_num_of_words').text(data.num_of_words);
+  $('#r_num_of_grammers').text(data.num_of_used_grammer_content);
+  $('#r_num_of_incorrect').text(data.num_of_incorrect);
+}
 
 $(function() {
   var activeTab = $('a[data-toggle="tab"][class*="active"]').attr('href');
@@ -38,9 +45,13 @@ $(function() {
   });
   
   var def_text = location.search.match('txt=(.*?)(&|$)');
-  console.log(def_text);
+//  console.log(def_text);
   if (def_text){
     $('#inputtext').val(decodeURI(def_text[1])).keyup();
+  }
+  
+  if (rcv_data){
+    change_data(rcv_data);
   }
   
   $('#submit_button').on('click', function(e) {
