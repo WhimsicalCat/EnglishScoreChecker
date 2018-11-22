@@ -7,13 +7,33 @@ Created on 2018/10/31
 from flask import Blueprint, request
 import flask
 
+from scripts import GradeSystem, clf
+
 DEF_blp_name = 'english_score_checker'
 blueprint_esc = Blueprint(DEF_blp_name, __name__)
+
+def get_score(input_text):
+    data = input_text + ' '
+    surface = GradeSystem.Surface(unicode(data))
+    ngram, stats, diff = surface.features()
+    grmitem = GradeSystem.GrmItem(unicode(data))
+    grm, pos_ngram, use_list = grmitem.features()
+    inputs = GradeSystem.Feature(ngram=ngram, 
+                                 pos_ngram=pos_ngram, 
+                                 grmitem=grm, 
+                                 word_difficulty=diff, 
+                                 stats=stats).concat()
+    grade = clf.predict(inputs)
+    output_dict = GradeSystem.output(grade, stats, diff, use_list)
+    print(output_dict)
+    return output_dict
+
 
 @blueprint_esc.route('/')
 def index():
     input_text = request.args.get('txt')
     if input_text:
+        output_dict = get_score(input_text)
         chart_datas = [{'data': [10, 20, 30],
                         'backgroundColor': [
                             'rgba(255, 0, 0, 0.2)',
