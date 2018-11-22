@@ -3,3 +3,4 @@ syntax: glob
 .pydevproject
 __pycache__/
 .settings/
+*.pyc
