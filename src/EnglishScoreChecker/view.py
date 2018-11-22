@@ -1,3 +1,4 @@
+# encoding: utf-8
 '''
 Created on 2018/10/31
 
@@ -25,7 +26,6 @@ def get_score(input_text):
                                  stats=stats).concat()
     grade = clf.predict(inputs)
     output_dict = GradeSystem.output(grade, stats, diff, use_list)
-    print(output_dict)
     return output_dict
 
 
@@ -34,24 +34,27 @@ def index():
     input_text = request.args.get('txt')
     if input_text:
         output_dict = get_score(input_text)
-        chart_datas = [{'data': [10, 20, 30],
+        sum_of_rate = sum(output_dict['word_diff'])
+        chart_datas = [{'data': [round(num/sum_of_rate*100, 1) 
+                                 for num 
+                                 in output_dict['word_diff']],
                         'backgroundColor': [
                             'rgba(255, 0, 0, 0.2)',
                             'rgba(0, 255, 0, 0.2)',
-                            'rgba(0, 0, 255, 0.2)',],}]
-        chart_labels = ['red', 'green', 'blue']
+                            'rgba(0, 0, 255, 0.2)',
+                            'rgba(255, 255, 0, 0.2)',],}]
+        chart_labels = ['A1', 'A2', 'B1', u'機能語']
         chart_data = {'datasets': chart_datas,
                       'labels': chart_labels}
         chart_options = {'cutoutPercentage': 0}
         ret_json = {'chart_data': chart_data,
                     'chart_options': chart_options,
-                    'num_of_chars': 10,
-                    'num_of_words': 10,
-                    'num_of_incorrect': 1,
-                    'num_of_used_grammer_content': 3}
-        g_contents = ['grammer like something1',
-                      'grammer like something2',
-                      'grammer like something3']
+                    'num_of_chars': output_dict['stats'][0],
+                    'num_of_words': output_dict['stats'][1],
+                    'num_of_incorrect': 0,
+                    'num_of_used_grammer_content': len(output_dict['grmitem']),
+                    'CEFR_level': output_dict['grade']}
+        g_contents = [item.decode('utf8') for item in output_dict['grmitem']]
         return flask.render_template(
             'checker_page.html',
             data=ret_json,

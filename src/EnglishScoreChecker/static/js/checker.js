@@ -5,6 +5,7 @@ function change_data(data) {
   $('#r_num_of_words').text(data.num_of_words);
   $('#r_num_of_grammers').text(data.num_of_used_grammer_content);
   $('#r_num_of_incorrect').text(data.num_of_incorrect);
+  $('#r_cefr_level').text(data.CEFR_level);
 }
 
 $(function() {
