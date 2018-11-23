@@ -5,13 +5,34 @@ Created on 2018/10/31
 @author: Takimoto Hiroki
 '''
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 import flask
+import os
+import pickle
+from datetime import datetime
 
 from scripts import GradeSystem, clf
 
 DEF_blp_name = 'english_score_checker'
 blueprint_esc = Blueprint(DEF_blp_name, __name__)
+
+cfp = os.path.dirname(os.path.abspath(__file__)) + os.sep
+log_dir = cfp + 'log' + os.sep
+if not os.path.isdir(log_dir):
+    current_app.logger.info('creating log direcroty: {}'.format(log_dir))
+    os.makedirs(log_dir)
+
+def log_to_pickle(input_text, output_dict):
+    timestamp = datetime.now()
+    dict_to_pickle = {'input': input_text,
+                      'output': output_dict,
+                      'time': timestamp.strftime("%Y/%m/%d %H:%M:%S")}
+    filename = timestamp.strftime('%Y%m%d_%H%M%S')
+    filepath ='{dir}{name}.pkl'.format(dir = log_dir,
+                                       name=filename)
+    with open(filepath, mode='wb') as outfile:
+        pickle.dump(dict_to_pickle, outfile, protocol=2)
+    current_app.logger.info('output log to {}'.format())
 
 def get_score(input_text):
     data = input_text + ' '
@@ -55,6 +76,11 @@ def index():
                     'num_of_used_grammer_content': len(output_dict['grmitem']),
                     'CEFR_level': output_dict['grade']}
         g_contents = [item.decode('utf8') for item in output_dict['grmitem']]
+        try:
+            log_to_pickle(input_text, output_dict)
+        except:
+            current_app.logger.exception(
+                'exception during outputing log to pickle')
         return flask.render_template(
             'checker_page.html',
             data=ret_json,

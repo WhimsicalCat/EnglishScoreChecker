@@ -13,4 +13,6 @@ class BaseConfig(object):
 class DevelopConfig(BaseConfig):
     DEBUG = True
     TESTING = True
-    
+
+class ProductionConfig(BaseConfig):
+    pass
