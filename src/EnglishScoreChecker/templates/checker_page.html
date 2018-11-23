@@ -25,20 +25,20 @@ var rcv_data = null
         <a class="flex-sm-fill text-sm-center nav-link active" 
            role="tab" 
            data-toggle="tab" 
-           id='tab_essay' 
-           aria-controls="essay" 
-           href='#essay'>
-          Essay
+           id='textbook' 
+           aria-controls="textbook" 
+           href='#textbook'>
+          Textbook
         </a>
       </li>
       <li class="nav-item" role="presentation">
         <a class="flex-sm-fill text-sm-center nav-link" 
            role="tab" 
            data-toggle="tab" 
-           id='tab_textbook' 
-           aria-controls="textbook" 
-           href='#textbook'>
-          Textbook
+           id='essay' 
+           aria-controls="essay" 
+           href='#essay'>
+          Essay
         </a>
       </li>
     </ul>
@@ -86,9 +86,11 @@ var rcv_data = null
         <div class='col-md-3 text-center'>
           <p>使用文法項目数</p>
         </div>
-<!--         <div class='col-md-3 text-center'> -->
-<!--           <p>推定誤り数</p> -->
-<!--         </div> -->
+        <div class='col-md-3 text-center'>
+          {% if is_essay %}
+          <p>推定誤り数</p>
+          {% endif %}
+        </div>
       </div>
       <div class='row'>
         <div class='col-md-3 text-center'>
@@ -100,9 +102,11 @@ var rcv_data = null
         <div class='col-md-3 text-center'>
           <p id='r_num_of_grammers'>0</p>
         </div>
-<!--         <div class='col-md-3 text-center'> -->
-<!--           <p id='r_num_of_incorrect'>0</p> -->
-<!--         </div> -->
+        <div class='col-md-3 text-center'>
+          {% if is_essay %}
+          <p id='r_num_of_incorrect'>0</p>
+          {% endif %}
+        </div>
       </div>
       <div class='row'>
         <div class='col-md'>

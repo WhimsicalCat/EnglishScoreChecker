@@ -58,7 +58,8 @@ def index():
         return flask.render_template(
             'checker_page.html',
             data=ret_json,
-            grammer_contents=g_contents)
+            grammer_contents=g_contents,
+            is_essay=True if request.args.get('type') == '#essay' else False)
     else:
         return flask.render_template('checker_page.html')
 

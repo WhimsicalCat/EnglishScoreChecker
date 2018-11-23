@@ -48,7 +48,12 @@ $(function() {
   var def_text = location.search.match('txt=(.*?)(&|$)');
 //  console.log(def_text);
   if (def_text){
-    $('#inputtext').val(decodeURI(def_text[1])).keyup();
+    $('#inputtext').val(decodeURIComponent(def_text[1])).keyup();
+  }
+  var def_activated_type = location.search.match('type=(.*?)(&|$)');
+  if (def_activated_type){
+//    console.log(decodeURIComponent(def_activated_type[1]));
+    $(decodeURIComponent(def_activated_type[1])).click();
   }
   
   if (rcv_data){
@@ -66,7 +71,10 @@ $(function() {
   }
   
   $('#submit_button').on('click', function(e) {
-    window.location.search = 'txt=' + $('#inputtext').val();
+    window.location.search = 'txt=' 
+                             + encodeURIComponent($('#inputtext').val()) 
+                             + '&type=' 
+                             + activeTab;
   });
 //  console.log(activeTab);
 });
