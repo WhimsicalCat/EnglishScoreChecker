@@ -13,10 +13,11 @@ $(function() {
   
   $('a[data-toggle="tab"]').on('click', function(e) {
     activeTab = $(e.target).attr('href');
+    $('#inputtext').val('').keyup();
 //    console.log(activeTab);
   });
   
-  $('#inputtext').keyup(function(e) {
+  function when_text_changed(e) {
 //    console.log($(e.target).val());
     $.ajax({
       url: 'count_word',
@@ -43,17 +44,27 @@ $(function() {
     .fail(function(recv){
       
     });
+  }
+  
+  $('#inputtext').bind({
+    paste: function(e) {
+      setTimeout( function(e) {
+        when_text_changed(e)
+      }, 10);
+    }
   });
   
-  var def_text = location.search.match('txt=(.*?)(&|$)');
-//  console.log(def_text);
-  if (def_text){
-    $('#inputtext').val(decodeURIComponent(def_text[1])).keyup();
-  }
+  $('#inputtext').keyup(when_text_changed);
+  
   var def_activated_type = location.search.match('type=(.*?)(&|$)');
   if (def_activated_type){
 //    console.log(decodeURIComponent(def_activated_type[1]));
     $(decodeURIComponent(def_activated_type[1])).click();
+  }
+  var def_text = location.search.match('txt=(.*?)(&|$)');
+//  console.log(def_text);
+  if (def_text){
+    $('#inputtext').val(decodeURIComponent(def_text[1])).keyup();
   }
   
   if (rcv_data){
