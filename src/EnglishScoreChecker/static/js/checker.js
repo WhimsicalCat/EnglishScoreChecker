@@ -49,13 +49,13 @@ $(function() {
   $('#inputtext').on('paste', function(e) {
     setTimeout( function() {
       when_text_changed(e);
-    }, 10);
+    }, 100);
   });
   
   $('#inputtext').on('mouseup', function(e) {
     setTimeout( function() {
       when_text_changed(e);
-    }, 10);
+    }, 1000);
   });
   
   $('#inputtext').keyup(when_text_changed);
