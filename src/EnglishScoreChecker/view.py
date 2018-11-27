@@ -32,7 +32,7 @@ def log_to_pickle(input_text, output_dict):
                                        name=filename)
     with open(filepath, mode='wb') as outfile:
         pickle.dump(dict_to_pickle, outfile, protocol=2)
-    current_app.logger.info('output log to {}'.format())
+    current_app.logger.info('output log to {}'.format(filepath))
 
 def get_score(input_text):
     data = input_text + ' '
