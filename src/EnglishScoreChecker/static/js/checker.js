@@ -46,12 +46,16 @@ $(function() {
     });
   }
   
-  $('#inputtext').bind({
-    paste: function(e) {
-      setTimeout( function(e) {
-        when_text_changed(e)
-      }, 10);
-    }
+  $('#inputtext').on('paste', function(e) {
+    setTimeout( function() {
+      when_text_changed(e);
+    }, 10);
+  });
+  
+  $('#inputtext').on('mouseup', function(e) {
+    setTimeout( function() {
+      when_text_changed(e);
+    }, 10);
   });
   
   $('#inputtext').keyup(when_text_changed);
