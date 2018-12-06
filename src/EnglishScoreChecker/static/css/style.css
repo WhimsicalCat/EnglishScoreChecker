@@ -6,6 +6,10 @@
 	visibility: hidden;
 }
 
+.alert {
+	margin-top: 1rem;
+}
+
 #level_chart {
 	width: 100%;
 	height: auto;
