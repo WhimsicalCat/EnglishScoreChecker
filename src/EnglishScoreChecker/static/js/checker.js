@@ -86,10 +86,13 @@ $(function() {
   }
   
   $('#submit_button').on('click', function(e) {
-    window.location.search = 'txt=' 
-                             + encodeURIComponent($('#inputtext').val()) 
-                             + '&type=' 
-                             + activeTab;
+//    console.log('clicked');
+    target = 'txt=' 
+             + encodeURIComponent($('#inputtext').val()) 
+             + '&type=' 
+             + encodeURIComponent(activeTab);
+//    console.log(target);
+    window.location.search = target;
   });
 //  console.log(activeTab);
 });
