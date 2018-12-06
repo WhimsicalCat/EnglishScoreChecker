@@ -54,7 +54,11 @@ def get_score(input_text):
 def index():
     input_text = request.args.get('txt')
     if input_text:
-        output_dict = get_score(input_text)
+        try:
+            output_dict = get_score(input_text)
+        except UnicodeEncodeError:
+            flask.flash(u'申し訳ありません。非ASCII文字の入力は現在対応中です。')
+            return flask.render_template('checker_page.html')
         sum_of_rate = sum(output_dict['word_diff'])
         chart_datas = [{'data': [round(num/sum_of_rate*100, 1) 
                                  for num 
