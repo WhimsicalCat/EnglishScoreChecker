@@ -60,6 +60,18 @@ def remove_non_ascii_chars(src_text):
     removed_text = non_ascii_pattern.sub('', removed_text)
     return removed_text
 
+@blueprint_esc.route('/api', methods=['POST', 'PUT'])
+def api():
+    try:
+        if request.method == 'POST':
+            pass
+        elif request.method == 'PUT':
+            pass
+    except Exception as e:
+        current_app.logger.critical('unhandled exception was raised. '\
+                                    'check traceback')
+        current_app.logger.exception(e)
+
 @blueprint_esc.route('/')
 def index():
     input_text = request.args.get('txt')
@@ -91,9 +103,10 @@ def index():
         g_contents = [item.decode('utf8') for item in output_dict['grmitem']]
         try:
             log_to_pickle(input_text, output_dict)
-        except:
-            current_app.logger.exception(
+        except Exception as e:
+            current_app.logger.critical(
                 'exception during outputing log to pickle')
+            current_app.logger.exception(e)
         return flask.render_template(
             'checker_page.html',
             data=ret_json,
