@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "text": {
+            "type": "string"
+        },
+        "type": {
+            "tyep": "string",
+            "pattern": "essay|textbook"
+        },
+        "cefr_rank": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "text",
+        "type",
+        "cefr_rank"
+    ]
+}
