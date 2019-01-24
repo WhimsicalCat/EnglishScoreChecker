@@ -5,16 +5,19 @@ Created on 2018/10/31
 @author: Takimoto Hiroki
 '''
 
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, jsonify
 import flask
 import os
 import pickle
 from datetime import datetime
 import regex
+import json
+import jsonschema
+from werkzeug.exceptions import InternalServerError
 
 non_ascii_pattern = regex.compile('[^\p{ASCII}]')
 
-from scripts import GradeSystem, clf
+from scripts import GradeSystem, predict
 
 DEF_blp_name = 'english_score_checker'
 blueprint_esc = Blueprint(DEF_blp_name, __name__)
@@ -24,6 +27,19 @@ log_dir = cfp + 'log' + os.sep
 if not os.path.isdir(log_dir):
     current_app.logger.info('creating log direcroty: {}'.format(log_dir))
     os.makedirs(log_dir)
+
+with open(current_app.config['API_POST_SCHEMA_PATH']) as infile:
+    api_post_schema = json.load(infile)
+with open(current_app.config['API_PUT_SCHEMA_PATH']) as infile:
+    api_put_schema = json.load(infile)
+with open(current_app.config['API_RESULT_SCHEMA_PATH']) as infile:
+    api_result_schema = json.load(infile)
+
+class APIError(Exception):
+    pass
+
+class NoJSONDataError(APIError):
+    pass
 
 def log_to_pickle(input_text, output_dict):
     timestamp = datetime.now()
@@ -48,7 +64,7 @@ def get_score(input_text):
                                  grmitem=grm, 
                                  word_difficulty=diff, 
                                  stats=stats).concat()
-    grade = clf.predict(inputs)
+    grade = predict(inputs)
     output_dict = GradeSystem.output(grade, stats, diff, use_list)
     return output_dict
 
@@ -63,14 +79,67 @@ def remove_non_ascii_chars(src_text):
 @blueprint_esc.route('/api', methods=['POST', 'PUT'])
 def api():
     try:
+        if request.is_json:
+            raise NoJSONDataError('request is not json data')
+        request_json = request.json
         if request.method == 'POST':
-            pass
+            try:
+                jsonschema.validate(request_json, api_post_schema)
+            except jsonschema.ValidationError as e:
+                current_app.logger.exception(e)
+                error_responce = {'api_status_code': 601,
+                                  'message': 'JSONSchemaError'}
+                jsonschema.validate(error_responce, api_result_schema)
+                return jsonify(error_responce)
+            
+            output_dict = get_score(request_json['text'])
+            try:
+                log_to_pickle(request_json['text'], output_dict)
+            except Exception as e:
+                current_app.logger.critical(
+                    'exception during outputing log to pickle')
+            current_app.logger.exception(e)
+            sum_of_rate = sum(output_dict['word_diff'])
+            g_contents = [item.decode('utf8') 
+                          for item 
+                          in output_dict['grmitem']]
+            result_json = \
+                {'cefr_rank': output_dict['grade'],
+                 'num_of_sentence': output_dict['status'][0],
+                 'num_of_words': output_dict['status'][1],
+                 'num_of_grammer_contents': len(output_dict['grmitem']),
+                 'vocabulary_rates': [{level_name: level_rate}
+                                      for level_name, level_rate
+                                      in zip(['A1', 'A2', 'B1', u'機能語'],
+                                             [round(num/sum_of_rate*100, 1) 
+                                              for num 
+                                              in output_dict['word_diff']])],
+                 'used_grammer_contents': [{gc_name: 1}
+                                           for gc_name
+                                           in g_contents]}
+            if request_json['type'] == 'textbook':
+                result_json['num_of_errors'] = 0
+            result_responce = {'api_status_code': 200,
+                               'message': 'Success',
+                               'result': result_json}
+            
+            try:                
+                jsonschema.validate(result_responce, api_result_schema)
+            except jsonschema.ValidationError as e:
+                current_app.logger.exception(e)
+                raise
+
+            return jsonify(result_responce)
         elif request.method == 'PUT':
-            pass
+            raise NotImplementedError
+    except InternalServerError:
+        # this exception was already handled
+        pass
     except Exception as e:
         current_app.logger.critical('unhandled exception was raised. '\
                                     'check traceback')
         current_app.logger.exception(e)
+        
 
 @blueprint_esc.route('/')
 def index():
