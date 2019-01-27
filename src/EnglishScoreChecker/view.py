@@ -79,7 +79,7 @@ def remove_non_ascii_chars(src_text):
 @blueprint_esc.route('/api', methods=['POST', 'PUT'])
 def api():
     try:
-        if request.is_json:
+        if not request.is_json:
             raise NoJSONDataError('request is not json data')
         request_json = request.json
         if request.method == 'POST':
@@ -98,23 +98,25 @@ def api():
             except Exception as e:
                 current_app.logger.critical(
                     'exception during outputing log to pickle')
-            current_app.logger.exception(e)
+                current_app.logger.exception(e)
             sum_of_rate = sum(output_dict['word_diff'])
             g_contents = [item.decode('utf8') 
                           for item 
                           in output_dict['grmitem']]
             result_json = \
                 {'cefr_rank': output_dict['grade'],
-                 'num_of_sentence': output_dict['status'][0],
-                 'num_of_words': output_dict['status'][1],
+                 'num_of_sentences': output_dict['stats'][0],
+                 'num_of_words': output_dict['stats'][1],
                  'num_of_grammer_contents': len(output_dict['grmitem']),
-                 'vocabulary_rates': [{level_name: level_rate}
+                 'vocabulary_rates': [{'level': level_name,
+                                       'rate': level_rate}
                                       for level_name, level_rate
                                       in zip(['A1', 'A2', 'B1', u'機能語'],
                                              [round(num/sum_of_rate*100, 1) 
                                               for num 
                                               in output_dict['word_diff']])],
-                 'used_grammer_contents': [{gc_name: 1}
+                 'used_grammer_contents': [{'grammer_type': gc_name,
+                                            'frequency': 1}
                                            for gc_name
                                            in g_contents]}
             if request_json['type'] == 'textbook':
@@ -123,7 +125,7 @@ def api():
                                'message': 'Success',
                                'result': result_json}
             
-            try:                
+            try:
                 jsonschema.validate(result_responce, api_result_schema)
             except jsonschema.ValidationError as e:
                 current_app.logger.exception(e)
