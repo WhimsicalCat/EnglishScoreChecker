@@ -27,6 +27,11 @@ log_dir = cfp + 'log' + os.sep
 if not os.path.isdir(log_dir):
     current_app.logger.info('creating log direcroty: {}'.format(log_dir))
     os.makedirs(log_dir)
+feedback_dir = cfp + 'feedback' + os.sep
+if not os.path.isdir(feedback_dir):
+    current_app.logger.info(
+        'creating feedback data directory: {}'.format(feedback_dir))
+    os.makedirs(feedback_dir)
 
 with open(current_app.config['API_POST_SCHEMA_PATH']) as infile:
     api_post_schema = json.load(infile)
@@ -47,11 +52,19 @@ def log_to_pickle(input_text, output_dict):
                       'output': output_dict,
                       'time': timestamp.strftime("%Y/%m/%d %H:%M:%S")}
     filename = timestamp.strftime('%Y%m%d_%H%M%S')
-    filepath ='{dir}{name}.pkl'.format(dir = log_dir,
+    filepath ='{dir}{name}.pkl'.format(dir=log_dir,
                                        name=filename)
     with open(filepath, mode='wb') as outfile:
         pickle.dump(dict_to_pickle, outfile, protocol=2)
     current_app.logger.info('output log to {}'.format(filepath))
+
+def record_feedback(feedback_json):
+    timestamp = datetime.now()
+    filename = timestamp.strftime('%Y%m%d_%H%M%S')
+    filepath = '{dir}{name}.json'.format(dir=feedback_dir,
+                                         name=filename)
+    with open(filepath, mode='w') as outfile:
+        json.dump(feedback_json, outfile)
 
 def get_score(input_text):
     data = input_text + ' '
@@ -132,8 +145,33 @@ def api():
                 raise
 
             return jsonify(result_responce)
+        
         elif request.method == 'PUT':
-            raise NotImplementedError
+            try:
+                jsonschema.validate(request_json, api_put_schema)
+            except jsonschema.ValidationError as e:
+                current_app.logger.exception(e)
+                error_responce = {'api_status_code': 601,
+                                  'message': 'JSONSchemaError'}
+                jsonschema.validate(error_responce, api_result_schema)
+                return jsonify(error_responce)
+            record_feedback(request_json)
+            try:
+                log_to_pickle('feedback', request_json)
+            except Exception as e:
+                current_app.logger.critical(
+                    'exception during outputing log to pickle')
+                current_app.logger.exception(e)
+            feedback_responce = {'api_status_code': 200,
+                               'message': 'Success'}
+            try:
+                jsonschema.validate(feedback_responce, api_result_schema)
+            except jsonschema.ValidationError as e:
+                current_app.logger.exception(e)
+                raise
+            
+            return jsonify(feedback_responce)
+        
     except InternalServerError:
         # this exception was already handled
         pass
