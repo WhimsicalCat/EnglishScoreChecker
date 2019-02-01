@@ -116,21 +116,23 @@ $(function() {
       url: 'receive_feedback',
       type: "PUT",
       data: json_data,
-      timeout: 1000000,
+      timeout: 10000,
       beforeSend: function(xhr, settings) {
         // ボタンを無効化し、二重送信を防止
         form_button.attr('disabled', true);
       },
       // 応答後
       complete: function(xhr, textStatus) {
-        // ボタンを有効化し、再送信を許可
-        form_button.attr('disabled', false);
+        
       },
       success: function(result, textStatus, xhr) {
         alert('送信に成功しました');
+        form_button.text('送信済み');
       },
       error: function(xhr, textStatus, error) {
         alert('送信に失敗しました');
+        // ボタンを有効化し、再送信を許可
+        form_button.attr('disabled', false);
       }
     });
   });
