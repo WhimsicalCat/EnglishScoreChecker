@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "api_status_code": {
+            "type": "number"
+        },
+        "message": {
+            "tyep": "string"
+        },
+        "result": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "cefr_rank": {
+                    "type": "string"
+                },
+                "num_of_sentences": {
+                    "type": "number"
+                },
+                "num_of_words": {
+                    "type": "number"
+                },
+                "num_of_grammer_contents": {
+                    "type": "number"
+                },
+                "num_of_errors": {
+                    "type": "number"
+                },
+                "vocabulary_rates": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "level": {
+                                "type": "string"
+                            },
+                            "rate": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                },
+                "used_grammer_contents": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "grammer_type": {
+                                "type": "string"
+                            },
+                            "frequency": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "api_status_code",
+        "message"
+    ]
+}

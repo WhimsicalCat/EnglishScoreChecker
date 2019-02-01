@@ -94,5 +94,48 @@ $(function() {
 //    console.log(target);
     window.location.search = target;
   });
+  
+  $('#send_feedback').on('click', function(e){
+    console.log('send_feedback submitted')
+    var target_form = $(this).parents('form');
+    
+//    console.log(target_form);
+    
+    var form_button = target_form.find('button');
+    var def_text = location.search.match('txt=(.*?)(&|$)');
+    var json_data = target_form.serializeArray();
+    
+    json_data.push({"name":"text",
+                    "value": decodeURIComponent(def_text[1])});
+    json_data.push({"name":"type",
+                    "value": activeTab});
+                    
+    console.log(json_data);
+    
+    $.ajax({
+      url: 'receive_feedback',
+      type: "PUT",
+      data: json_data,
+      timeout: 10000,
+      beforeSend: function(xhr, settings) {
+        // ボタンを無効化し、二重送信を防止
+        form_button.attr('disabled', true);
+      },
+      // 応答後
+      complete: function(xhr, textStatus) {
+        
+      },
+      success: function(result, textStatus, xhr) {
+        alert('送信に成功しました');
+        form_button.text('送信済み');
+      },
+      error: function(xhr, textStatus, error) {
+        alert('送信に失敗しました');
+        // ボタンを有効化し、再送信を許可
+        form_button.attr('disabled', false);
+      }
+    });
+  });
+    
 //  console.log(activeTab);
 });
