@@ -228,3 +228,12 @@ def index():
 def count_num_of_words():
     text_data = flask.request.form['data']
     return '{}'.format(len(text_data.strip('.').split()))
+
+@blueprint_esc.route('/receive_feedback', methods=['PUT'])
+def receive_feedback():
+    received_data = dict(flask.request.form)
+    received_data = {key: val[0] for key, val in received_data.items()}
+    received_data['type'] = received_data['type'].strip('#')
+    record_feedback(received_data)
+    return 'success'
+    
