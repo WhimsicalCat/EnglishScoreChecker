@@ -17,6 +17,8 @@ from werkzeug.exceptions import InternalServerError
 
 non_ascii_pattern = regex.compile('[^\p{ASCII}]')
 
+feedback_log_input = '###feedback_log###'
+
 from scripts import GradeSystem, predict
 
 DEF_blp_name = 'english_score_checker'
@@ -157,7 +159,7 @@ def api():
                 return jsonify(error_responce)
             record_feedback(request_json)
             try:
-                log_to_pickle('feedback', request_json)
+                log_to_pickle(feedback_log_input, request_json)
             except Exception as e:
                 current_app.logger.critical(
                     'exception during outputing log to pickle')
@@ -235,5 +237,13 @@ def receive_feedback():
     received_data = {key: val[0] for key, val in received_data.items()}
     received_data['type'] = received_data['type'].strip('#')
     record_feedback(received_data)
+    
+    try:
+        log_to_pickle(feedback_log_input, received_data)
+    except Exception as e:
+        current_app.logger.critical(
+            'exception during outputing log to pickle')
+        current_app.logger.exception(e)
+
     return 'success'
     
