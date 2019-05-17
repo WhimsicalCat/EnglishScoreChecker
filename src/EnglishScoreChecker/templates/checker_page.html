@@ -62,19 +62,25 @@ var rcv_data = null
         <div class='float-right'>
           <span id='num_of_word'>0</span>/10
           <i class="fas fa-ban" id='check_mark'></i>
-          &nbsp
+          &nbsp;
           <button type="button" 
                   class="btn btn-primary" 
                   id='submit_button' 
                   disabled=''>
             submit
           </button>
+          <a role="button" 
+             class="btn btn-light" 
+             id='button_clear' 
+             href="./">
+            clear
+          </a>
         </div>
       </div>
     </div>
   </div>
 {% if data is defined %}
-  <div class='row px-3' id='result'>
+  <div class='row px-3 border-top' id='result'>
     <div class='col-md-8'>
       <div class='row'>
         <div class='col-md-3 text-center'>
@@ -108,7 +114,7 @@ var rcv_data = null
           {% endif %}
         </div>
       </div>
-      <div class='row'>
+      <div class='row border-top'>
         <div class='col-md'>
           <p>使用文法項目</p>
         </div>
@@ -134,7 +140,60 @@ var rcv_data = null
           <p id='r_cefr_level' class='h2'></p>
         </div>
       </div>
-      <div class='row'>
+      <div class='row mb-3'>
+        <div class='col'>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <button type="button" 
+                      class="btn btn-info btn-sm" 
+                      data-toggle="collapse" 
+                      data-target="#feedback_form" 
+                      aria-expanded="false" 
+                      aria-controls="feedback_form"
+                      id='expand_feedbackform_form'>
+                間違ったCEFRランクを訂正する
+              </button>
+            </div>
+          </div>
+          <div class='collapse' id='feedback_form'>
+            <div class='row'>
+              <div class='col-md'>
+                <div class="border m-3">
+                  <form>
+                    <div class="row m-3">
+                      正しいCEFRランクを選択、送信して下さい
+                    </div>
+                    <div class="row m-3">
+                      <div class="col-md">
+                        <select class="form-control form-control-sm" 
+                                id="right_cefr_rank" 
+                                name="cefr_rank">
+                          <option>A1</option>
+                          <option>A2</option>
+                          <option>B1</option>
+                          <option>B2</option>
+                          <option>C1</option>
+                          <option>C2</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row m-3">
+                      <div class="col-md-4 text-center">
+                        <button type="button" 
+                                class="btn btn-info btn-sm" 
+                                id='send_feedback'>
+                          送信
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='row border-top'>
         <div class='col-md text-center'>
           <p>使用語彙レベル割合</p>
         </div>
@@ -147,5 +206,4 @@ var rcv_data = null
     </div>
   </div>
 {% endif %}
-</div>
 {% endblock %}
