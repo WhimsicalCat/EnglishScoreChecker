@@ -14,3 +14,7 @@
 	width: 100%;
 	height: auto;
 }
+
+.modal-lg { 
+	max-width: 90%; 
+}
