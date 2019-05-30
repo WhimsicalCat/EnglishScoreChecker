@@ -215,7 +215,8 @@ def index():
                     'CEFR_level': output_dict['grade']}
         g_contents = [(item[0].decode('utf8'), item[1]) 
                       for item 
-                      in sorted(output_dict['grmitem'], 
+                      in sorted(sorted(output_dict['grmitem'], 
+                                       key=lambda x: int(x[0].split()[0])), 
                                 key=lambda x: x[1], 
                                 reverse=True)]
         try:
