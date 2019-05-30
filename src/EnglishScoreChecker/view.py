@@ -188,7 +188,8 @@ def index():
     input_text = request.args.get('txt')
     if input_text:
         if non_ascii_pattern.search(input_text):
-            flask.flash(u'非ASCII文字の入力は現在対応中です。非ASCII文字を無視してスコアを計算しました。')
+            flask.flash(u'非ASCII文字の入力は現在対応中です。'
+                        u'非ASCII文字を無視してスコアを計算しました。')
             input_text = remove_non_ascii_chars(input_text)
         output_dict = get_score(input_text)
         sum_of_rate = sum(output_dict['word_diff'])
@@ -199,8 +200,9 @@ def index():
                             'rgba(255, 0, 0, 0.2)',
                             'rgba(0, 255, 0, 0.2)',
                             'rgba(0, 0, 255, 0.2)',
-                            'rgba(255, 255, 0, 0.2)',],}]
-        chart_labels = ['A1', 'A2', 'B1', u'機能語']
+                            'rgba(255, 255, 0, 0.2)',
+                            'rgba(0, 255, 255, 0.2)',],}]
+        chart_labels = ['A1', 'A2', 'B1', 'B2',  u'機能語']
         chart_data = {'datasets': chart_datas,
                       'labels': chart_labels}
         chart_options = {'cutoutPercentage': 0}
@@ -211,7 +213,11 @@ def index():
                     'num_of_incorrect': 0,
                     'num_of_used_grammer_content': len(output_dict['grmitem']),
                     'CEFR_level': output_dict['grade']}
-        g_contents = [item.decode('utf8') for item in output_dict['grmitem']]
+        g_contents = [(item[0].decode('utf8'), item[1]) 
+                      for item 
+                      in sorted(output_dict['grmitem'], 
+                                key=lambda x: x[1], 
+                                reverse=True)]
         try:
             log_to_pickle(input_text, output_dict)
         except Exception as e:

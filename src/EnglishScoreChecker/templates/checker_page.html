@@ -20,6 +20,19 @@ var rcv_data = null
 {% block content %}
 <div class='container' id='maincontent'>
   <div class='p-3'>
+    <div class='row'>
+      <div class='col col-md'>
+        <div class='float-right'>
+          <button type="button" 
+                  class="btn btn-outline-dark" 
+                  id='help_button' 
+                  data-toggle="modal" 
+                  data-target="#modal_help">
+            使い方
+          </button>
+        </div>
+      </div>
+    </div>
     <ul class="nav nav-tabs flex-column flex-sm-row" id='selector'>
       <li class="nav-item" role="presentation">
         <a class="flex-sm-fill text-sm-center nav-link active" 
@@ -80,57 +93,83 @@ var rcv_data = null
     </div>
   </div>
 {% if data is defined %}
-  <div class='row px-3 border-top' id='result'>
+  <div class='row px-3' id='result'>
     <div class='col-md-8'>
-      <div class='row'>
-        <div class='col-md-3 text-center'>
-          <p>文数</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          <p>単語数</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          <p>使用文法項目数</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          {% if is_essay %}
-          <p>推定誤り数</p>
-          {% endif %}
-        </div>
-      </div>
-      <div class='row'>
-        <div class='col-md-3 text-center'>
-          <p id='r_num_of_chars'>0</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          <p id='r_num_of_words'>0</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          <p id='r_num_of_grammers'>0</p>
-        </div>
-        <div class='col-md-3 text-center'>
-          {% if is_essay %}
-          <p id='r_num_of_incorrect'>0</p>
-          {% endif %}
-        </div>
-      </div>
       <div class='row border-top'>
-        <div class='col-md'>
-          <p>使用文法項目</p>
+        <div class='col-md-3'>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p>文数</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p id='r_num_of_chars'>0</p>
+            </div>
+          </div>
         </div>
-       </div>
+        <div class='col-md-3'>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p>単語数</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p id='r_num_of_words'>0</p>
+            </div>
+          </div>
+        </div>
+        <div class='col-md-3'>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p>使用文法項目数</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md text-center'>
+              <p id='r_num_of_grammers'>0</p>
+            </div>
+          </div>
+        </div>
+        <div class='col-md-3'>
+          <div class='row'>
+            <div class='col-md text-center'>
+              {% if is_essay %}
+              <p>推定誤り数</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md text-center'>
+              {% if is_essay %}
+              <p id='r_num_of_incorrect'>0</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
       {% if grammer_contents is defined %}
-      <div class='row'>
+      <div class='row pt-3'>
         <div class='col-md'>
-          {% for content in grammer_contents %}
-          <p>{{ content }}</p>
-          {% endfor %}
+          <table class="table table-hover">
+            <tr>
+              <th>使用文法項目</td>
+              <th>頻度</td>
+            </tr>
+            {% for content in grammer_contents %}
+            <tr>
+              <td>{{ content[0] }}</td>
+              <td>{{ content[1] }}</td>
+            </tr>
+            {% endfor %}
+          </table>
         </div>
       </div>
       {% endif %}
     </div>
     <div class='col-md-4'>
-      <div class='row'>
+      <div class='row border-top'>
         <div class='col-md text-center'>
           <p >CEFRランク</p>
         </div>
@@ -205,5 +244,28 @@ var rcv_data = null
       </div>
     </div>
   </div>
+</div>
 {% endif %}
+<div class="modal fade" tabindex="-1" id="modal_help" 
+     role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="label1">Webアプリの使い方</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md">
+              <img src="{{url_for('static', filename='image/help_slide.png')}}" 
+                   class="img-fluid mx-auto d-block" 
+                   alt="help image">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
