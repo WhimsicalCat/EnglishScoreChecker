@@ -114,17 +114,21 @@ var rcv_data = null
           {% endif %}
         </div>
       </div>
-      <div class='row border-top'>
-        <div class='col-md'>
-          <p>使用文法項目</p>
-        </div>
-       </div>
       {% if grammer_contents is defined %}
       <div class='row'>
         <div class='col-md'>
-          {% for content in grammer_contents %}
-          <p>{{ content }}</p>
-          {% endfor %}
+          <table class="table table-hover">
+            <tr>
+              <th>使用文法項目</td>
+              <th>頻度</td>
+            </tr>
+            {% for content in grammer_contents %}
+            <tr>
+              <td>{{ content[0] }}</td>
+              <td>{{ content[1] }}</td>
+            </tr>
+            {% endfor %}
+          </table>
         </div>
       </div>
       {% endif %}
