@@ -1,0 +1,3 @@
+[submodule "src/scripts/GradeSystem"]
+	path = src/scripts/GradeSystem
+	url = git@github.com:masanorihayashi/GradeSystem.git
