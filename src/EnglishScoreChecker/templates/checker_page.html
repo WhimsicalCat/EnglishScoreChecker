@@ -30,6 +30,13 @@ var rcv_data = null
                   data-target="#modal_help">
             使い方
           </button>
+          <button type="button" 
+                  class="btn btn-outline-dark" 
+                  id='disclaimer_button' 
+                  data-toggle="modal" 
+                  data-target="#modal_disclaimer">
+            免責事項
+          </button>
         </div>
       </div>
     </div>
@@ -245,6 +252,12 @@ var rcv_data = null
     </div>
   </div>
 </div>
+{% else %}
+<div>
+  本Webアプリの利用者は、本Webアプリにデータを送信した時点で、
+  <a href="#" data-toggle="modal" data-target="#modal_disclaimer">免責事項</a>を
+  了解したものとします。
+</div>
 {% endif %}
 <div class="modal fade" tabindex="-1" id="modal_help" 
      role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -256,12 +269,40 @@ var rcv_data = null
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md">
-              <img src="{{url_for('static', filename='image/help_slide.png')}}" 
-                   class="img-fluid mx-auto d-block" 
-                   alt="help image">
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md">
+                <img src="{{url_for('static', filename='image/help_slide.png')}}" 
+                     class="img-fluid mx-auto d-block" 
+                     alt="help image">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" tabindex="-1" id="modal_disclaimer" 
+     role="dialog" aria-labelledby="myNormalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="label1">免責事項</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col">
+              <ol>
+                <li> 文法事項は CEFR-J の文法プロファイルの項目が網羅的にリスト化されるわけではありません。
+                <li> 現状では、エラー判定は精度が高くありません。
+                <li> 結果は自動分析です。完璧な物ではないことをご留意の上、自己責任で利用して下さい。
+              </ol>
+            </div>
           </div>
         </div>
       </div>
