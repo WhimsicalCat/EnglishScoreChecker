@@ -165,11 +165,23 @@ var rcv_data = null
               <th>頻度</td>
             </tr>
             {% for content in grammer_contents %}
+            {% if loop.index0 < 10 %}
             <tr>
+            {% else %}
+            <tr id="collapseme" class="collapse multi-collapse">
+            {% endif %}
               <td>{{ content[0] }}</td>
               <td>{{ content[1] }}</td>
             </tr>
             {% endfor %}
+            {% if grammer_contents|length >= 10 %}
+            <tr id="show_all" 
+                data-toggle="collapse" 
+                data-target=".multi-collapse" 
+                class="clickable">
+              <td colspan=2 class='text-center'>使用文法項目の頻度上位10件を表示しています。<br>全て表示するにはここをクリックしてください。</td>
+            </tr>
+            {% endif %}
           </table>
         </div>
       </div>
