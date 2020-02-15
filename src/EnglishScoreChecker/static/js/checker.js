@@ -136,6 +136,8 @@ $(function() {
       }
     });
   });
-    
+  $('#show_all').on('click', function(e){
+    $('#show_all').hide();
+  });
 //  console.log(activeTab);
 });
