@@ -5,6 +5,7 @@ Created on 2018/10/31
 @author: Takimoto Hiroki
 '''
 
+from scripts import GradeSystem, predict
 from flask import Blueprint, request, current_app, jsonify
 import flask
 import os
@@ -19,7 +20,6 @@ non_ascii_pattern = regex.compile('[^\p{ASCII}]')
 
 feedback_log_input = '###feedback_log###'
 
-from scripts import GradeSystem, predict
 
 DEF_blp_name = 'english_score_checker'
 blueprint_esc = Blueprint(DEF_blp_name, __name__)
@@ -42,11 +42,14 @@ with open(current_app.config['API_PUT_SCHEMA_PATH']) as infile:
 with open(current_app.config['API_RESULT_SCHEMA_PATH']) as infile:
     api_result_schema = json.load(infile)
 
+
 class APIError(Exception):
     pass
 
+
 class NoJSONDataError(APIError):
     pass
+
 
 def log_to_pickle(input_text, output_dict):
     timestamp = datetime.now()
@@ -54,11 +57,12 @@ def log_to_pickle(input_text, output_dict):
                       'output': output_dict,
                       'time': timestamp.strftime("%Y/%m/%d %H:%M:%S")}
     filename = timestamp.strftime('%Y%m%d_%H%M%S')
-    filepath ='{dir}{name}.pkl'.format(dir=log_dir,
-                                       name=filename)
+    filepath = '{dir}{name}.pkl'.format(dir=log_dir,
+                                        name=filename)
     with open(filepath, mode='wb') as outfile:
         pickle.dump(dict_to_pickle, outfile, protocol=2)
     current_app.logger.info('output log to {}'.format(filepath))
+
 
 def record_feedback(feedback_json):
     timestamp = datetime.now()
@@ -68,20 +72,22 @@ def record_feedback(feedback_json):
     with open(filepath, mode='w') as outfile:
         json.dump(feedback_json, outfile)
 
+
 def get_score(input_text):
     data = input_text + ' '
-    surface = GradeSystem.Surface(unicode(data))
+    surface = GradeSystem.Surface(str(data))
     ngram, stats, diff = surface.features()
-    grmitem = GradeSystem.GrmItem(unicode(data))
+    grmitem = GradeSystem.GrmItem(str(data))
     grm, pos_ngram, use_list = grmitem.features()
-    inputs = GradeSystem.Feature(ngram=ngram, 
-                                 pos_ngram=pos_ngram, 
-                                 grmitem=grm, 
-                                 word_difficulty=diff, 
+    inputs = GradeSystem.Feature(ngram=ngram,
+                                 pos_ngram=pos_ngram,
+                                 grmitem=grm,
+                                 word_difficulty=diff,
                                  stats=stats).concat()
     grade = predict(inputs)
     output_dict = GradeSystem.output(grade, stats, diff, use_list)
     return output_dict
+
 
 def remove_non_ascii_chars(src_text):
     removed_text = src_text
@@ -90,6 +96,7 @@ def remove_non_ascii_chars(src_text):
     removed_text.replace(u'“', '"')
     removed_text = non_ascii_pattern.sub('', removed_text)
     return removed_text
+
 
 @blueprint_esc.route('/api', methods=['POST', 'PUT'])
 def api():
@@ -106,7 +113,7 @@ def api():
                                   'message': 'JSONSchemaError'}
                 jsonschema.validate(error_responce, api_result_schema)
                 return jsonify(error_responce)
-            
+
             output_dict = get_score(request_json['text'])
             try:
                 log_to_pickle(request_json['text'], output_dict)
@@ -115,8 +122,8 @@ def api():
                     'exception during outputing log to pickle')
                 current_app.logger.exception(e)
             sum_of_rate = sum(output_dict['word_diff'])
-            g_contents = [item.decode('utf8') 
-                          for item 
+            g_contents = [item.decode('utf8')
+                          for item
                           in output_dict['grmitem']]
             result_json = \
                 {'cefr_rank': output_dict['grade'],
@@ -127,8 +134,8 @@ def api():
                                        'rate': level_rate}
                                       for level_name, level_rate
                                       in zip(['A1', 'A2', 'B1', u'機能語'],
-                                             [round(num/sum_of_rate*100, 1) 
-                                              for num 
+                                             [round(num/sum_of_rate*100, 1)
+                                              for num
                                               in output_dict['word_diff']])],
                  'used_grammer_contents': [{'grammer_type': gc_name,
                                             'frequency': 1}
@@ -139,7 +146,7 @@ def api():
             result_responce = {'api_status_code': 200,
                                'message': 'Success',
                                'result': result_json}
-            
+
             try:
                 jsonschema.validate(result_responce, api_result_schema)
             except jsonschema.ValidationError as e:
@@ -147,7 +154,7 @@ def api():
                 raise
 
             return jsonify(result_responce)
-        
+
         elif request.method == 'PUT':
             try:
                 jsonschema.validate(request_json, api_put_schema)
@@ -165,23 +172,23 @@ def api():
                     'exception during outputing log to pickle')
                 current_app.logger.exception(e)
             feedback_responce = {'api_status_code': 200,
-                               'message': 'Success'}
+                                 'message': 'Success'}
             try:
                 jsonschema.validate(feedback_responce, api_result_schema)
             except jsonschema.ValidationError as e:
                 current_app.logger.exception(e)
                 raise
-            
+
             return jsonify(feedback_responce)
-        
+
     except InternalServerError:
         # this exception was already handled
         pass
     except Exception as e:
-        current_app.logger.critical('unhandled exception was raised. '\
+        current_app.logger.critical('unhandled exception was raised. '
                                     'check traceback')
         current_app.logger.exception(e)
-        
+
 
 @blueprint_esc.route('/')
 def index():
@@ -193,15 +200,15 @@ def index():
             input_text = remove_non_ascii_chars(input_text)
         output_dict = get_score(input_text)
         sum_of_rate = sum(output_dict['word_diff'])
-        chart_datas = [{'data': [round(num/sum_of_rate*100, 1) 
-                                 for num 
+        chart_datas = [{'data': [round(num/sum_of_rate*100, 1)
+                                 for num
                                  in output_dict['word_diff']],
                         'backgroundColor': [
                             'rgba(255, 0, 0, 0.2)',
                             'rgba(0, 255, 0, 0.2)',
                             'rgba(0, 0, 255, 0.2)',
                             'rgba(255, 255, 0, 0.2)',
-                            'rgba(0, 255, 255, 0.2)',],}]
+                            'rgba(0, 255, 255, 0.2)', ], }]
         chart_labels = ['A1', 'A2', 'B1', 'B2',  u'機能語']
         chart_data = {'datasets': chart_datas,
                       'labels': chart_labels}
@@ -213,12 +220,16 @@ def index():
                     'num_of_incorrect': 0,
                     'num_of_used_grammer_content': len(output_dict['grmitem']),
                     'CEFR_level': output_dict['grade']}
-        g_contents = [(item[0].decode('utf8'), item[1]) 
-                      for item 
-                      in sorted(sorted(output_dict['grmitem'], 
-                                       key=lambda x: int(x[0].split()[0])), 
-                                key=lambda x: x[1], 
-                                reverse=True)]
+        # 51-1のような文法項目に対応させる
+        # 2021/11/13修正 by kawamoto
+        # g_contents = [(item[0].decode('utf8'), item[1]) for item in sorted(sorted(output_dict['grmitem'],key=lambda x: int(x[0].split()[0])),key=lambda x: x[1],reverse=True)]
+        g_contents = [(item[0].decode('utf8'), item[1])
+                      for item in output_dict['grmitem']]
+        g_contents.sort(key=lambda x: x[0].split()[1])
+        g_contents.sort(key=lambda x: int(x[0].split()[0].split("-")[0]))
+        g_contents.sort(key=lambda x: x[1], reverse=True)
+        # 修正終了
+
         try:
             log_to_pickle(input_text, output_dict)
         except Exception as e:
@@ -233,10 +244,12 @@ def index():
     else:
         return flask.render_template('checker_page.html')
 
+
 @blueprint_esc.route('/count_word', methods=['POST'])
 def count_num_of_words():
     text_data = flask.request.form['data']
     return '{}'.format(len(text_data.strip('.').split()))
+
 
 @blueprint_esc.route('/receive_feedback', methods=['PUT'])
 def receive_feedback():
@@ -244,7 +257,7 @@ def receive_feedback():
     received_data = {key: val[0] for key, val in received_data.items()}
     received_data['type'] = received_data['type'].strip('#')
     record_feedback(received_data)
-    
+
     try:
         log_to_pickle(feedback_log_input, received_data)
     except Exception as e:
@@ -253,4 +266,3 @@ def receive_feedback():
         current_app.logger.exception(e)
 
     return 'success'
-    
