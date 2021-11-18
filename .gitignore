@@ -1,6 +1,4 @@
 *.pyc
 src/EnglishScoreChecker/log/
-
-*.pkl
-*.npy
-src/scripts/GradeSystem/resource/
+src/EnglishScoreChecker/feedback/
+src/instance/

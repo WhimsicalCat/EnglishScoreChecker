@@ -75,9 +75,9 @@ def record_feedback(feedback_json):
 
 def get_score(input_text):
     data = input_text + ' '
-    surface = GradeSystem.Surface(str(data))
+    surface = GradeSystem.Surface(unicode(data))
     ngram, stats, diff = surface.features()
-    grmitem = GradeSystem.GrmItem(str(data))
+    grmitem = GradeSystem.GrmItem(unicode(data))
     grm, pos_ngram, use_list = grmitem.features()
     inputs = GradeSystem.Feature(ngram=ngram,
                                  pos_ngram=pos_ngram,
@@ -220,7 +220,7 @@ def index():
                     'num_of_incorrect': 0,
                     'num_of_used_grammer_content': len(output_dict['grmitem']),
                     'CEFR_level': output_dict['grade']}
-        # 51-1のような文法項目に対応させる
+
         # 2021/11/13修正 by kawamoto
         # g_contents = [(item[0].decode('utf8'), item[1]) for item in sorted(sorted(output_dict['grmitem'],key=lambda x: int(x[0].split()[0])),key=lambda x: x[1],reverse=True)]
         g_contents = [(item[0].decode('utf8'), item[1])
