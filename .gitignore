@@ -1,2 +1,4 @@
 *.pyc
 src/EnglishScoreChecker/log/
+src/EnglishScoreChecker/feedback/
+src/instance/
